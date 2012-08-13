@@ -1,0 +1,28 @@
+Suppose you have two collections: users and pajamas
+
+users collection contains the following document:
+{'_id': 'foo@bar.com'}
+
+pajamas collection contains the following document:
+{'_id': ObjectID('5028...'), 'user': 'foo@bar.com', 'color': 'pink'}
+
+Suppose you delete the user's document and forgot to delete his pajama. Now the pajama document is stale and takes up space on your database.
+
+This tool find and removes stale documents.
+
+Sample usage:
+
+import pymongo
+from mongo_cleaner import Cleaner
+
+structure = {
+    'pajamas': [('user', 'users')],
+}
+
+connection = pymongo.Connection()
+db = connection['pajamaapp']
+
+cleaner = Cleaner(structure, db)
+cleaner.clean()
+
+To see which documents are stale without removing them pass 'dry_run=True' to clean().
