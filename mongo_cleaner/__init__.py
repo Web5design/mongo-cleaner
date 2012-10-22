@@ -8,11 +8,31 @@ class Cleaner(object):
     def clean(self, dry_run=False):
         for collection, rules in self.structure.items():
             print 'searching', collection
+
             for doc in self.db[collection].find():
-                for field, destination in rules:
+
+                for field, target_collections in rules:
+                    remove = False
+
                     foreign_id = doc.get(field)
-                    if not foreign_id or not self.db[destination].find_one(doc[field]):
-                        print 'removing', doc
-                        if not dry_run:
+                    if foreign_id:
+                        found = False
+
+                        for target_collection in target_collections:
+                            target_doc = self.db[target_collection].find_one(doc[field])
+                            if target_doc:
+                                found = True
+                                break
+                                
+                        if not found:
+                            remove = True
+                    else:
+                        remove = True
+
+                    if remove:
+                        if dry_run:
+                            print 'not removing', doc
+                        else:
+                            print 'removing', doc
                             self.db[collection].remove(doc)
             print 'cleaned', collection
