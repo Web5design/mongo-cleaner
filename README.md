@@ -16,11 +16,11 @@ Suppose you delete the user's document and forgot to delete his pajama. Now the 
 
 This tool finds and removes stale documents.
 
-## To istall:
+## Install
 
     pip install mongo-cleaner
 
-## Sample usage:
+## Sample usage
 
     import pymongo
     from mongo_cleaner import Cleaner
